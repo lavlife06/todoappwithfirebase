@@ -1,11 +1,7 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
-import TodoContext from '../../context/todoContext';
 
-const SignedOutLinks = () => {
-  
-  const todoContext = useContext(TodoContext);
-  const { SignupClickHandler } = todoContext;
+const SignedOutLinks = ({ SignupClickHandler }) => {
   
   return (
     <div>
