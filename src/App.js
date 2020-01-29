@@ -1,6 +1,6 @@
 // /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState} from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import 'tachyons';
 import Navbar from './components/layout/Navbar';
 import SignIn from './components/auth/SignIn';
@@ -11,17 +11,13 @@ import { fire } from './components/config/fbConfig';
 const App = () => {
 
   const [isUserLogedIn, setIsUserLogedIn] = useState('');
-  const [wantToSignup, setWantToSignUp] = useState(false);
-
-  const SignupClickHandler = () => {
-    setWantToSignUp(true);
-  }
 
   useEffect(() => {
     fire.auth().onAuthStateChanged(user => {
       if(user){
         console.log('logged in')
         setIsUserLogedIn(user.uid)
+        // console.log(user)
       }else{
         console.log('logged out');
         setIsUserLogedIn('')
@@ -32,15 +28,24 @@ const App = () => {
 
   return (
     <Router>
-      <Navbar isUserLogedIn={isUserLogedIn} SignupClickHandler={SignupClickHandler} />
+      <Navbar isUserLogedIn={isUserLogedIn} />
         <Switch>
-          { (isUserLogedIn && (<Router><Route exact path='/' component={Home} /> <Redirect to='/' /> </Router>)) 
-              || 
-            (!isUserLogedIn && (<Router><Route exact path='/signin' component={SignIn} /> <Redirect to='/signin' /> </Router>) && !wantToSignup)
-              ||
-              (!isUserLogedIn && (<Router><Route exact path='/signup' component={SignUp} /> <Redirect to='/signup' /> </Router>) && wantToSignup)}
-          <Route exact path='/signup' component={SignUp} />
-          <Route exact path='/signin' component={SignIn} />
+          {/* { (isUserLogedIn) && (<Router><Route exact path='/home' render={() => (
+            <Home isUserLogedIn={isUserLogedIn} />
+          )}/> <Redirect to='/home' /> </Router>) } */}
+          { (!isUserLogedIn && <Route exact path='/' component={SignIn} />) || (
+            <Route exact path='/' render={() => (
+            <Home isUserLogedIn={isUserLogedIn} />
+          )}/>
+          ) }
+          <Route exact path='/signup' render={() => (
+            <SignUp isUserLogedIn={isUserLogedIn} />)}/>
+          <Route exact path='/signin' render={() => (
+            <SignIn isUserLogedIn={isUserLogedIn} />
+          )}/>
+          <Route exact path='/home' render={() => (
+            <Home isUserLogedIn={isUserLogedIn} />
+          )}/>
         </Switch>
     </Router>    
   )

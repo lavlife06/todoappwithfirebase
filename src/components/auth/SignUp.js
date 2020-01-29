@@ -1,29 +1,32 @@
 import React,{ useState } from 'react';
-import { fire } from '../config/fbConfig';
+import { fire, db } from '../config/fbConfig';
+import { Redirect } from 'react-router-dom';
 
-const SignUp = () => {
+const SignUp = ({ isUserLogedIn }) => {
 
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [firstName,setFirstName] = useState('');
   const [lastName,setLastName] = useState('');
-  
-  const signuphandler = () => {
-    return (
-      fire.auth().createUserWithEmailAndPassword(email, password).then((resp) => {
-        console.log(resp)
-      })      
-    )
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    signuphandler();
+    fire.auth().createUserWithEmailAndPassword(email, password).then((resp) => {
+      return (
+        db.collection('users').doc(resp.user.uid).set({
+          firstName: firstName,
+          lastName: lastName,
+          initials: firstName[0] + lastName[0]
+        })
+      )
+    })
     setEmail('');
     setPassword('');
     setFirstName('');
     setLastName('');
   }
+
+  if(isUserLogedIn){ return<Redirect to='/' /> }else{
   return (
     <div className="container">
       <form className="white" onSubmit={handleSubmit}>
@@ -49,7 +52,7 @@ const SignUp = () => {
         </div>
       </form>
     </div>
-  )
+  )}
 }
 
 export default SignUp

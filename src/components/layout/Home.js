@@ -1,8 +1,9 @@
 import React,{ Fragment, useState }  from 'react';
 import Todos from '../userdata/Todos';
 import Addtodo from '../userdata/Addtodo';
+import { Redirect } from 'react-router-dom';
 
-const Home = () => {
+const Home = ({ isUserLogedIn }) => {
 
   const [todos,setTodos] = useState([]);
 
@@ -19,6 +20,9 @@ const Home = () => {
      const newtodos =[...todos,todo];
      setTodos(newtodos)
   }
+
+  if(!isUserLogedIn){ return <Redirect to='/signin' /> }
+  else{
   return (
     <Fragment>
       <div className="App container">
@@ -27,7 +31,7 @@ const Home = () => {
         <Addtodo propHandler={Addertodo}/>
       </div>
     </Fragment>
-    )
+    )}
 }
 
 export default Home

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { fire } from '../config/fbConfig'
+import { Redirect } from 'react-router-dom'
 
 class SignIn extends Component {
   state = {
@@ -14,11 +15,12 @@ class SignIn extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     fire.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then(userdetail => {
-      // console.log(userdetail.user);
+      //  console.log(fire);
     })
     this.setState({email: '',password: ''});
   }
   render() {
+    if(this.props.isUserLogedIn){ return<Redirect to="/" /> }else{
     return (
       <div className="container">
         <form className="white" onSubmit={this.handleSubmit}>
@@ -36,7 +38,7 @@ class SignIn extends Component {
           </div>
         </form>
       </div>
-    )
+    )}
   }
 }
 
