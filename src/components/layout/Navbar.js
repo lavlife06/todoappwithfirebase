@@ -1,18 +1,12 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import SignedInLinks from './SignedInLinks'
 import SignedOutLinks from './SignedOutLinks'
-import { db } from '../config/fbConfig'
 
 
-const Navbar = ({ isUserLogedIn }) => {
+const Navbar = ({ isUserLogedIn, username }) => {
   
-  useEffect(() => {
-    console.log(db.users)
-  }, [])
-  console.log(db.users)
-
-  const links = isUserLogedIn ? <SignedInLinks /> : <SignedOutLinks />;
+  const links = isUserLogedIn ? <SignedInLinks username={username} /> : <SignedOutLinks />;
 
   return (
   <nav className="nav-wrapper grey darken-3">

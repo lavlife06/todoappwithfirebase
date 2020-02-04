@@ -1,11 +1,21 @@
-import React,{ Fragment, useState }  from 'react';
+ /* eslint-disable react-hooks/exhaustive-deps */
+import React,{ Fragment, useState, useEffect}  from 'react';
 import Todos from '../userdata/Todos';
 import Addtodo from '../userdata/Addtodo';
 import { Redirect } from 'react-router-dom';
+import { db } from '../config/fbConfig';
+// import { db } from '../config/fbConfig';
 
 const Home = ({ isUserLogedIn }) => {
-
   const [todos,setTodos] = useState([]);
+
+  useEffect(() => {
+    db.collection('users').doc(isUserLogedIn).get().then((res) => {
+      console.log(res.data());
+      setTodos(res.data().todolist);
+      console.log(res.data().todolist)
+    });
+  }, [])
 
   const statedelFunc = (id) => {
     const newtodolist = todos.filter(t => {
@@ -18,11 +28,18 @@ const Home = ({ isUserLogedIn }) => {
   const Addertodo = (todo) => {
      todo.id = Math.random();
      const newtodos =[...todos,todo];
-     setTodos(newtodos)
+     setTodos(newtodos);
+     db.collection('users').doc(isUserLogedIn).set({
+      todolist : newtodos
+    }, { merge: true });
   }
 
   if(!isUserLogedIn){ return <Redirect to='/signin' /> }
   else{
+    console.log(todos);
+    db.collection('users').doc(isUserLogedIn).get().then((res) => {
+      console.log(res.data().todolist);
+    });
   return (
     <Fragment>
       <div className="App container">

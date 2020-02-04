@@ -1,9 +1,8 @@
-import React,{ useState } from 'react';
-import { fire, db } from '../config/fbConfig';
+import React,{ useState} from 'react';
 import { Redirect } from 'react-router-dom';
+import { fire, db } from '../config/fbConfig';
 
 const SignUp = ({ isUserLogedIn }) => {
-
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [firstName,setFirstName] = useState('');
@@ -14,17 +13,16 @@ const SignUp = ({ isUserLogedIn }) => {
     fire.auth().createUserWithEmailAndPassword(email, password).then((resp) => {
       return (
         db.collection('users').doc(resp.user.uid).set({
+          useruid: resp.user.uid,
           firstName: firstName,
           lastName: lastName,
-          initials: firstName[0] + lastName[0]
+          initials: firstName[0].toUpperCase() + lastName[0].toUpperCase(),
+          todolist: []
         })
       )
     })
-    setEmail('');
-    setPassword('');
-    setFirstName('');
-    setLastName('');
-  }
+    setEmail('');setPassword('');setFirstName('');setLastName('');
+  };
 
   if(isUserLogedIn){ return<Redirect to='/' /> }else{
   return (
